@@ -1,3 +1,3 @@
-module github.com/nikodaks/in-memory-cache
+module github.com/nikodaks/cache
 
 go 1.19
