@@ -5,23 +5,39 @@
 ```go
 package main
 
-import (
-  "fmt"
-  "github.com/nikodaks/cache"
-)
-
 func main() {
-	cache := cache.New()
+	key := "1"
+	value := 2
+	timeToLive := time.Second * 2
 
-	cache.Set("userId", 42)
-	userId := cache.Get("userId")
+	CleanupInterval := time.Second * 1
+	startCleanup := true 
 
-	fmt.Println(userId)
+	c := GoCache.NewCache(CleanupInterval, startCleanup)
+	c.Set(key, value, timeToLive)
 
-	cache.Delete("userId")
-	userId := cache.Get("userId")
+	_, err := c.Get(key)
+	if err == nil {
+		fmt.Println("found element")
 
-	fmt.Println(userId)
+	}
+
+	// wait for cleanup data
+	time.Sleep(time.Second * 5)
+
+	v, err := c.Get("1")
+	if err == nil {
+		fmt.Printf("found element %v \n", v)
+	} else {
+		fmt.Println(err)
+	}
+
+	ok := c.Delete(key)
+	if ok {
+		fmt.Printf("Delete %s, number of elements in the cache %d", key, c.CountOfElement())
+	} else {
+		fmt.Printf("not found %s, number of elements in the cache %d", key, c.CountOfElement())
+	}
 }
 
 ```
